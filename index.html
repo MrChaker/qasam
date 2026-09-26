@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>أقسم بالله</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        background: #0e3b2e;
+        color: #f5efe0;
+        font-family: "Amiri", "Traditional Arabic", Georgia, serif;
+        padding: 24px;
+      }
+      .moshaf {
+        width: 220px;
+        height: 300px;
+        border-radius: 8px;
+        background: linear-gradient(145deg, #1b6b4f, #0b4a35);
+        border: 6px solid #d4af37;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .moshaf span {
+        font-size: 34px;
+        color: #d4af37;
+        line-height: 1.6;
+      }
+      button {
+        font: inherit;
+        font-size: 22px;
+        padding: 12px 36px;
+        border: 0;
+        border-radius: 999px;
+        background: #d4af37;
+        color: #0e3b2e;
+        cursor: pointer;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+      form {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+        width: min(320px, 90vw);
+      }
+      form.show {
+        display: flex;
+      }
+      input {
+        font: inherit;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #d4af37;
+        background: #0b4a35;
+        color: #f5efe0;
+      }
+      #msg {
+        font-size: 22px;
+        color: #7ee2b8;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="moshaf">
+      <span>القرآن<br />الكريم</span>
+    </div>
+    <button id="swear">أقسم بالله</button>
+
+    <form id="form">
+      <input name="name" placeholder="الاسم" required />
+      <input name="phone" type="tel" placeholder="رقم هاتف الفيسبوك" required />
+
+      <button type="submit">إرسال</button>
+    </form>
+
+    <p id="msg"></p>
+
+    <script>
+      const form = document.getElementById("form"),
+        msg = document.getElementById("msg");
+      document.getElementById("swear").onclick = (e) => {
+        form.classList.add("show");
+        e.target.remove();
+      };
+
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector("button");
+        btn.disabled = true;
+        const data = Object.fromEntries(new FormData(form));
+        try {
+          const r = await fetch(
+            "https://canary.activepieces.com/api/v1/webhooks/BZl9aIuy75fOHD0k1sg9M",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+            }
+          );
+          if (!r.ok) throw new Error(r.status);
+          form.remove();
+          msg.textContent = "تم إرسال قسمك بنجاح، بارك الله فيك 🤝";
+        } catch {
+          msg.textContent = "حدث خطأ، حاول مرة أخرى";
+          btn.disabled = false;
+        }
+      };
+    </script>
+  </body>
+</html>
